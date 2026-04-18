@@ -68,71 +68,75 @@
     </thead>
     <tbody id="progress-body"></tbody>
 </table>
-
 <script>
 async function loadAllData() {
     const plannedBody = document.getElementById('project-body');
     const progressBody = document.getElementById('progress-body');
 
-    // Fixed proxy usage
     const jsonUrl = "https://gist.githubusercontent.com/jubal-johnson/0bfbc1d3ce41ccd578cbae27748a24aa/raw/Planned%20project.json";
-
-const xmlUrl = "https://gist.githubusercontent.com/jubal-johnson/74f4a4440af2bcb5b623ae870e2c39db/raw/In-progress%20project.xml";
+    const xmlUrl = "https://gist.githubusercontent.com/jubal-johnson/74f4a4440af2bcb5b623ae870e2c39db/raw/In-progress%20project.xml";
 
     try {
-        // --- FETCH JSON ---
+        // ===== JSON FETCH =====
         const jsonRes = await fetch(jsonUrl);
-        if (!jsonRes.ok) throw new Error('JSON fetch failed');
         let jsonData = await jsonRes.json();
 
-// Fix: handle wrapped or incorrect format
-if (!Array.isArray(jsonData)) {
-    jsonData = jsonData.data || Object.values(jsonData);
-}
-        
-        plannedBody.innerHTML = ''; 
+        // Convert to array if needed
+        if (!Array.isArray(jsonData)) {
+            jsonData = Object.values(jsonData);
+        }
+
+        plannedBody.innerHTML = '';
+
         jsonData.forEach(p => {
             const row = document.createElement('tr');
             row.className = 'planned';
+
             row.innerHTML = `
-    <td>${p["Project Name"] || p.Project_Name}</td>
-    <td>${p.Company || p.company}</td>
-    <td>$${Number(p["Budget ($)"] || p.budget).toLocaleString()}</td>
-    <td>${p.Province || p.province}</td>
-    <td>${p["Start Date"] || p.Start_Date}</td>
-    <td>${p["Estimated End Date"] || p.Estimated_End_Date}</td>
-    <td>${p.Status || p.status}</td>`;
+                <td>${p.Project_Name || p["Project Name"] || "N/A"}</td>
+                <td>${p.Company || p.company || "N/A"}</td>
+                <td>$${Number(p.Budget || p["Budget ($)"] || 0).toLocaleString()}</td>
+                <td>${p.Province || p.province || "N/A"}</td>
+                <td>${p.Start_Date || p["Start Date"] || "N/A"}</td>
+                <td>${p.Estimated_End_Date || p["Estimated End Date"] || "N/A"}</td>
+                <td>${p.Status || p.status || "N/A"}</td>
+            `;
+
             plannedBody.appendChild(row);
         });
 
-        // --- FETCH XML ---
+        // ===== XML FETCH =====
         const xmlRes = await fetch(xmlUrl);
-        if (!xmlRes.ok) throw new Error('XML fetch failed');
         const xmlText = await xmlRes.text();
         const xmlDoc = new DOMParser().parseFromString(xmlText, "text/xml");
         const xmlProjects = xmlDoc.getElementsByTagName("project");
 
-        progressBody.innerHTML = ''; 
+        progressBody.innerHTML = '';
+
         Array.from(xmlProjects).forEach(p => {
-            const getVal = (tag) => p.getElementsByTagName(tag)[0]?.textContent || "";
+            const getVal = (tag) => p.getElementsByTagName(tag)[0]?.textContent || "N/A";
+
             const row = document.createElement('tr');
             row.className = 'in-progress';
+
             row.innerHTML = `
                 <td>${getVal("Project_Name")}</td>
                 <td>${getVal("Company")}</td>
-                <td>$${Number(getVal("Budget")).toLocaleString()}</td>
+                <td>$${Number(getVal("Budget") || 0).toLocaleString()}</td>
                 <td>${getVal("Province")}</td>
                 <td>${getVal("Start_Date")}</td>
                 <td>${getVal("Estimated_End_Date")}</td>
-                <td>${getVal("Status")}</td>`;
+                <td>${getVal("Status")}</td>
+            `;
+
             progressBody.appendChild(row);
         });
 
     } catch (error) {
         console.error("Detailed Error:", error);
-        plannedBody.innerHTML = `<tr><td colspan="7" style="color:orange; text-align:center;">
-            Data loading failed. If you are offline, check your connection. 
-            If online, try opening this file with "Live Server" in VS Code.
+
+        plannedBody.innerHTML = `<tr><td colspan="7" style="color:red; text-align:center;">
+            Failed to load data.
         </td></tr>`;
     }
 }
