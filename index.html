@@ -95,13 +95,13 @@ if (!Array.isArray(jsonData)) {
             const row = document.createElement('tr');
             row.className = 'planned';
             row.innerHTML = `
-                <td>${p["Project Name"]}</td>
-                <td>${p.Company}</td>
-                <td>$${Number(p["Budget ($)"]).toLocaleString()}</td>
-                <td>${p.Province}</td>
-                <td>${p["Start Date"]}</td>
-                <td>${p["Estimated End Date"]}</td>
-                <td>${p.Status}</td>`;
+    <td>${p["Project Name"] || p.Project_Name}</td>
+    <td>${p.Company || p.company}</td>
+    <td>$${Number(p["Budget ($)"] || p.budget).toLocaleString()}</td>
+    <td>${p.Province || p.province}</td>
+    <td>${p["Start Date"] || p.Start_Date}</td>
+    <td>${p["Estimated End Date"] || p.Estimated_End_Date}</td>
+    <td>${p.Status || p.status}</td>`;
             plannedBody.appendChild(row);
         });
 
