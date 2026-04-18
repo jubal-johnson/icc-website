@@ -81,21 +81,37 @@ async function loadAllData() {
         const jsonRes = await fetch(jsonUrl);
         let jsonData = await jsonRes.json();
 
-        // Convert to array if needed
+        console.log("RAW JSON:", jsonData);
+
+        // 🔥 Fix 1: If it's a string, parse it
+        if (typeof jsonData === "string") {
+            jsonData = JSON.parse(jsonData);
+        }
+
+        // 🔥 Fix 2: If wrapped inside another object
+        if (jsonData.data) {
+            jsonData = jsonData.data;
+        }
+
+        // 🔥 Fix 3: If still not array → convert
         if (!Array.isArray(jsonData)) {
             jsonData = Object.values(jsonData);
         }
 
+        console.log("FINAL JSON:", jsonData);
+
         plannedBody.innerHTML = '';
 
         jsonData.forEach(p => {
+            console.log("ROW:", p);
+
             const row = document.createElement('tr');
             row.className = 'planned';
 
             row.innerHTML = `
-                <td>${p.Project_Name || p["Project Name"] || "N/A"}</td>
+                <td>${p.Project_Name || p["Project Name"] || p.name || "N/A"}</td>
                 <td>${p.Company || p.company || "N/A"}</td>
-                <td>$${Number(p.Budget || p["Budget ($)"] || 0).toLocaleString()}</td>
+                <td>$${Number(p.Budget || p["Budget ($)"] || p.budget || 0).toLocaleString()}</td>
                 <td>${p.Province || p.province || "N/A"}</td>
                 <td>${p.Start_Date || p["Start Date"] || "N/A"}</td>
                 <td>${p.Estimated_End_Date || p["Estimated End Date"] || "N/A"}</td>
