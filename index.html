@@ -83,7 +83,12 @@ const xmlUrl = "https://gist.githubusercontent.com/jubal-johnson/74f4a4440af2bcb
         // --- FETCH JSON ---
         const jsonRes = await fetch(jsonUrl);
         if (!jsonRes.ok) throw new Error('JSON fetch failed');
-        const jsonData = await jsonRes.json();
+        let jsonData = await jsonRes.json();
+
+// Fix: handle wrapped or incorrect format
+if (!Array.isArray(jsonData)) {
+    jsonData = jsonData.data || Object.values(jsonData);
+}
         
         plannedBody.innerHTML = ''; 
         jsonData.forEach(p => {
