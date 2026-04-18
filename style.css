@@ -1,0 +1,131 @@
+/* ===== HEADER ===== */
+header h1{
+color:white
+}
+header {
+    background-color: #333;
+    
+    padding: 15px;
+}
+
+/* ===== NAV ===== */
+top_link_bar a {
+    color: white;
+    margin: 10px;
+    text-decoration: none;
+    font-weight: bold;
+}
+top_link_bar a:hover {
+    text-decoration: underline;
+}
+
+
+/* ===== GENERAL ===== */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial;
+    margin: 0;
+    text-align: center;
+    background-color: white;
+}
+
+
+/* ===== SECTIONS ===== */
+.section {
+    display: none;
+    padding: 20px;
+}
+
+/* Show selected section */
+.section:target {
+    display: block;
+}
+
+/* Show HOME only when no section is selected */
+body:not(:has(:target)) #home {
+    display: block;
+}
+
+/* ===== TEXT SECTION ===== */
+.home-text-section {
+    background-color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f4f4f4;
+    color: #2c3e50;
+}
+
+.home-text-section h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.home-text-section p {
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* ===== IMAGE SECTION ===== */
+.bgimage-section {
+    background-image: url("bgimage.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    height: 400px;
+}
+
+/* ===== TABLE ===== */
+h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+ 
+table {
+    width: 90%;
+    margin: 20px auto 40px auto;
+    border-collapse: collapse;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    background-color: #fff;
+}
+ 
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+ 
+th {
+    background-color: #3498db;
+    color: white;
+}
+ 
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+ 
+tr:hover {
+    background-color: #d1e7fd;
+}
+ 
+.planned {
+    color: #e67e22;
+    font-weight: bold;
+}
+ 
+.in-progress {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    margin-top: auto;
+}
