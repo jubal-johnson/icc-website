@@ -81,41 +81,40 @@ async function loadAllData() {
         const jsonRes = await fetch(jsonUrl);
         let jsonData = await jsonRes.json();
 
-        console.log("RAW JSON:", jsonData);
+        console.log("RAW:", jsonData);
 
-        // 🔥 Fix 1: If it's a string, parse it
+        // 🔥 Handle all possible formats
         if (typeof jsonData === "string") {
             jsonData = JSON.parse(jsonData);
         }
 
-        // 🔥 Fix 2: If wrapped inside another object
+        if (jsonData.projects) {
+            jsonData = jsonData.projects;
+        }
+
         if (jsonData.data) {
             jsonData = jsonData.data;
         }
 
-        // 🔥 Fix 3: If still not array → convert
         if (!Array.isArray(jsonData)) {
             jsonData = Object.values(jsonData);
         }
 
-        console.log("FINAL JSON:", jsonData);
+        console.log("FINAL:", jsonData);
 
         plannedBody.innerHTML = '';
 
         jsonData.forEach(p => {
-            console.log("ROW:", p);
-
             const row = document.createElement('tr');
-            row.className = 'planned';
 
             row.innerHTML = `
-                <td>${p.Project_Name || p["Project Name"] || p.name || "N/A"}</td>
-                <td>${p.Company || p.company || "N/A"}</td>
-                <td>$${Number(p.Budget || p["Budget ($)"] || p.budget || 0).toLocaleString()}</td>
-                <td>${p.Province || p.province || "N/A"}</td>
-                <td>${p.Start_Date || p["Start Date"] || "N/A"}</td>
-                <td>${p.Estimated_End_Date || p["Estimated End Date"] || "N/A"}</td>
-                <td>${p.Status || p.status || "N/A"}</td>
+                <td>${p["Project Name"] || p.Project_Name || "N/A"}</td>
+                <td>${p.Company || "N/A"}</td>
+                <td>$${Number(p["Budget ($)"] || p.Budget || 0).toLocaleString()}</td>
+                <td>${p.Province || "N/A"}</td>
+                <td>${p["Start Date"] || p.Start_Date || "N/A"}</td>
+                <td>${p["Estimated End Date"] || p.Estimated_End_Date || "N/A"}</td>
+                <td>${p.Status || "N/A"}</td>
             `;
 
             plannedBody.appendChild(row);
@@ -133,7 +132,6 @@ async function loadAllData() {
             const getVal = (tag) => p.getElementsByTagName(tag)[0]?.textContent || "N/A";
 
             const row = document.createElement('tr');
-            row.className = 'in-progress';
 
             row.innerHTML = `
                 <td>${getVal("Project_Name")}</td>
@@ -149,10 +147,10 @@ async function loadAllData() {
         });
 
     } catch (error) {
-        console.error("Detailed Error:", error);
+        console.error("ERROR:", error);
 
-        plannedBody.innerHTML = `<tr><td colspan="7" style="color:red; text-align:center;">
-            Failed to load data.
+        plannedBody.innerHTML = `<tr><td colspan="7" style="color:red;">
+            Failed to load data
         </td></tr>`;
     }
 }
